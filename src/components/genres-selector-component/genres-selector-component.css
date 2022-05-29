@@ -1,0 +1,23 @@
+.genres-navigation {
+    width: 25%;
+}
+
+.genres-navigation ul {
+    display: flex;
+    list-style-type: none;
+}
+
+.genres-navigation li {
+    flex: auto;
+}
+
+.genres-navigation_active {
+    border-bottom: 4px #F65261 solid;
+}
+
+.genres-navigation__tab a:hover,
+.genres-navigation__tab a:visited,
+.genres-navigation__tab a:link,
+.genres-navigation__tab a:active {
+    color: white;
+}

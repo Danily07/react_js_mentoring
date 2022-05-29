@@ -1,0 +1,24 @@
+.catalog-body {
+    padding: 5px 40px 5px 40px;
+    background-color: #232323;
+}
+
+.catalog-body .nav-sort {
+    display: flex;
+    justify-content: space-between;
+}
+
+.catalog-body .items-counter {
+    margin: 15px 0px 15px 0px;
+}
+
+.catalog-body .items-list {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+}
+
+.catalog-body .item-list__movie {
+    flex: 0 0 33.333333%;
+    margin-bottom: 18px;
+}

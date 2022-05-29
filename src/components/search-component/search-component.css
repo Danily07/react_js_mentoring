@@ -1,0 +1,8 @@
+#search-input {
+    width: 600px;
+    height: 100%;
+    background: rgba(66, 66, 66, 0.8);
+    border: none;
+    border-radius: 5px;
+    color: #FFFFFF;
+}
