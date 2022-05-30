@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './genres-selector-component.css';
-import 'bulma/css/bulma.css';
+//import 'bulma/css/bulma.css';
 
 let genresData = [
     { name: 'ALL', isActive: true },
@@ -18,7 +18,9 @@ function GenresSelector() {
                     <li className=".genres-navigation__tab">
                         <a
                             href="#"
-                            className={genre.isActive ? 'genres-navigation_active' : ''}
+                            className={
+                                genre.isActive ? 'genres-navigation_active' : ''
+                            }
                         >
                             {genre.name}
                         </a>

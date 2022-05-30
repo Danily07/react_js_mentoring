@@ -75,4 +75,4 @@ function Catalog(props) {
     );
 }
 
-export default Catalog;
+export { Catalog };

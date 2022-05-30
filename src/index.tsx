@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Catalog from './components/catalog-component/catalog-component.tsx';
+import { Catalog } from './components/catalog-component/catalog-component';
 import Header from './components/header-component/header-component.tsx';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
