@@ -1,15 +1,23 @@
-import { useState } from 'react';
+import React from 'react';
 import './item-count-component.css';
 
-function ItemsCount(props) {
+interface ItemsCountProps {
+    itemsCount?: number;
+}
+
+const ItemsCount: React.FC<ItemsCountProps> = props => {
     return (
         <>
             <label className="item-counter-label item-counter-label_number">
-                {props.ItemsCount}{' '}
+                {props.itemsCount}{' '}
             </label>
             <label className="item-counter-label">movies found</label>
         </>
     );
-}
+};
 
-export default ItemsCount;
+ItemsCount.defaultProps = {
+    itemsCount: 0,
+};
+
+export { ItemsCount };

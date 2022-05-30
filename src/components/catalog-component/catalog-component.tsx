@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import GenresSelector from '../genres-selector-component/genres-selector-component';
-import ItemsCount from '../items-count-component/items-count-component';
-import MovieItem from '../movie-item-component/movie-item-component';
+import { ItemsCount } from '../items-count-component/items-count-component';
+import { MovieItem } from '../movie-item-component/movie-item-component';
 import Sort from '../sort-component/sort-component';
 import './catalog-component.css';
 
@@ -58,7 +58,7 @@ function Catalog(props) {
                 <Sort></Sort>
             </div>
             <div className="items-counter">
-                <ItemsCount ItemsCount={moviesData.length}></ItemsCount>
+                <ItemsCount itemsCount={moviesData.length}></ItemsCount>
             </div>
             <div className="items-list">
                 {moviesData.map(dataItem => (
