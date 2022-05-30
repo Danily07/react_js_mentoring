@@ -1,8 +1,19 @@
 import { useState } from 'react';
-import './genres-selector-component.css';
-import 'bulma/css/bulma.css';
+import makeBEM from 'easy-bem';
+//import 'bulma/css/bulma.css';
 
-let genresData = [
+import './genres-selector-component.scss';
+
+const bem = makeBEM('genres-navigation');
+
+type GenreType = 'ALL' | 'DOCUMENTARY' | 'COMEDY' | 'HORROR' | 'CRIME';
+
+interface Genre {
+    readonly name: GenreType;
+    isActive: boolean;
+}
+
+let genresData: Array<Genre> = [
     { name: 'ALL', isActive: true },
     { name: 'DOCUMENTARY', isActive: false },
     { name: 'COMEDY', isActive: false },
@@ -12,13 +23,13 @@ let genresData = [
 
 function GenresSelector() {
     return (
-        <nav className="genres-navigation">
+        <nav className={bem()}>
             <ul>
                 {genresData.map(genre => (
-                    <li className=".genres-navigation__tab">
+                    <li className={bem('tab')}>
                         <a
                             href="#"
-                            className={genre.isActive ? 'genres-navigation_active' : ''}
+                            className={bem('genre', { active: genre.isActive })}
                         >
                             {genre.name}
                         </a>
@@ -29,4 +40,4 @@ function GenresSelector() {
     );
 }
 
-export default GenresSelector;
+export { GenresSelector };

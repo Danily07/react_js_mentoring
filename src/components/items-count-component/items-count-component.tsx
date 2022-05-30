@@ -1,15 +1,25 @@
-import { useState } from 'react';
-import './item-count-component.css';
+import React from 'react';
+import makeBEM from 'easy-bem';
 
-function ItemsCount(props) {
-    return (
-        <>
-            <label className="item-counter-label item-counter-label_number">
-                {props.ItemsCount}{' '}
-            </label>
-            <label className="item-counter-label">movies found</label>
-        </>
-    );
+import './item-count-component.scss';
+
+const bem = makeBEM('item-counter');
+
+interface ItemsCountProps {
+    itemsCount?: number;
 }
 
-export default ItemsCount;
+const ItemsCount: React.FC<ItemsCountProps> = props => {
+    return (
+        <div className={bem()}>
+            <label className={bem('label_number')}>{props.itemsCount} </label>
+            <label className={bem('label')}>movies found</label>
+        </div>
+    );
+};
+
+ItemsCount.defaultProps = {
+    itemsCount: 0,
+};
+
+export { ItemsCount };
