@@ -6,7 +6,14 @@ import './genres-selector-component.scss';
 
 const bem = makeBEM('genres-navigation');
 
-let genresData = [
+type GenreType = 'ALL' | 'DOCUMENTARY' | 'COMEDY' | 'HORROR' | 'CRIME';
+
+interface Genre {
+    readonly name: GenreType;
+    isActive: boolean;
+}
+
+let genresData: Array<Genre> = [
     { name: 'ALL', isActive: true },
     { name: 'DOCUMENTARY', isActive: false },
     { name: 'COMEDY', isActive: false },
@@ -33,4 +40,4 @@ function GenresSelector() {
     );
 }
 
-export default GenresSelector;
+export { GenresSelector };

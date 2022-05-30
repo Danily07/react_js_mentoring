@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import GenresSelector from '../genres-selector-component/genres-selector-component';
+import { GenresSelector } from '../genres-selector-component/genres-selector-component';
 import { ItemsCount } from '../items-count-component/items-count-component';
 import { MovieItem } from '../movie-item-component/movie-item-component';
 import Sort from '../sort-component/sort-component';
