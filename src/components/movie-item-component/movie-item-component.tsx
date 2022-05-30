@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import MovieInfo from '../movie-info-component/movie-info-component.tsx';
-import Poster from '../poster-component/poster-component.tsx';
+import MovieInfo from '../movie-info-component/movie-info-component';
+import Poster from '../poster-component/poster-component';
 import './movie-item-component.css';
 
 type ItemProps = {

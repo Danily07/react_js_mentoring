@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Catalog } from './components/catalog-component/catalog-component';
-import Header from './components/header-component/header-component.tsx';
+import Header from './components/header-component/header-component';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 

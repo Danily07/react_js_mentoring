@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import AddMovieButton from '../add-movie-component/add-movie-component.tsx';
-import SearchButton from '../search-button-component/search-button-component.tsx';
-import Search from '../search-component/search-component.tsx';
+import AddMovieButton from '../add-movie-component/add-movie-component';
+import SearchButton from '../search-button-component/search-button-component';
+import Search from '../search-component/search-component';
 import './header-component.css';
 
 function Header() {
@@ -13,7 +13,7 @@ function Header() {
                 </div>
                 <div className="search-block">
                     <h1 className="search-block__tagline">FIND YOUR MOVIE</h1>
-                    <div className='search-line'>
+                    <div className="search-line">
                         <Search className="search-block__input" />
                         <SearchButton />
                     </div>

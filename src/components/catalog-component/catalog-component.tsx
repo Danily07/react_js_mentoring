@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import GenresSelector from '../genres-selector-component/genres-selector-component.tsx';
-import ItemsCount from '../items-count-component/items-count-component.tsx';
-import MovieItem from '../movie-item-component/movie-item-component.tsx';
-import Sort from '../sort-component/sort-component.tsx';
+import GenresSelector from '../genres-selector-component/genres-selector-component';
+import ItemsCount from '../items-count-component/items-count-component';
+import MovieItem from '../movie-item-component/movie-item-component';
+import Sort from '../sort-component/sort-component';
 import './catalog-component.css';
 
 let moviesData = [
