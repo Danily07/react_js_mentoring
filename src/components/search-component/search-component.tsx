@@ -1,14 +1,23 @@
-import { useState } from 'react';
+import React from 'react';
+import classNames from 'classnames';
+import makeBEM from 'easy-bem';
+
 import './search-component.css';
 
-function Search(props) {
+const bem = makeBEM('search-input');
+
+interface SearchProps {
+    /** proxy class name */
+    className: string;
+}
+
+const Search: React.FC<SearchProps> = props => {
     return (
         <input
             placeholder="What do you want to watch?"
-            className={props.className}
-            id="search-input"
-        ></input>
+            className={classNames(bem(), props.className)}
+        />
     );
-}
+};
 
-export default Search;
+export { Search };

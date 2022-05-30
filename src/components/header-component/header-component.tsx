@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import AddMovieButton from '../add-movie-component/add-movie-component';
 import SearchButton from '../search-button-component/search-button-component';
-import Search from '../search-component/search-component';
+import { Search } from '../search-component/search-component';
 import './header-component.css';
 
 function Header() {
