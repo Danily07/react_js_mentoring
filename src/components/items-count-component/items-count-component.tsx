@@ -1,5 +1,6 @@
 import React from 'react';
-import './item-count-component.css';
+
+import './item-count-component.scss';
 
 interface ItemsCountProps {
     itemsCount?: number;
