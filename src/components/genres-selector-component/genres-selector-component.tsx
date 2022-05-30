@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import './genres-selector-component.css';
+import makeBEM from 'easy-bem';
 //import 'bulma/css/bulma.css';
+
+import './genres-selector-component.scss';
+
+const bem = makeBEM('genres-navigation');
 
 let genresData = [
     { name: 'ALL', isActive: true },
@@ -12,15 +16,13 @@ let genresData = [
 
 function GenresSelector() {
     return (
-        <nav className="genres-navigation">
+        <nav className={bem()}>
             <ul>
                 {genresData.map(genre => (
-                    <li className=".genres-navigation__tab">
+                    <li className={bem('tab')}>
                         <a
                             href="#"
-                            className={
-                                genre.isActive ? 'genres-navigation_active' : ''
-                            }
+                            className={bem('genre', { active: genre.isActive })}
                         >
                             {genre.name}
                         </a>
