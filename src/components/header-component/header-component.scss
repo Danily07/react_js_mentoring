@@ -1,0 +1,27 @@
+.header-block {
+    height: 200px;
+    background-image: url(../../../public/netflix-background.png);
+    background-size: 100%;
+    &__add-movie {
+        display: flex;
+        justify-content: flex-end;
+        padding: 20px 40px 0px 0px;
+        height: 28%;
+    }
+}
+
+.search-block {
+    padding-left: 100px;
+    &__tagline {
+        font-weight: 300;
+        font-size: 29px;
+        color: #FFFFFF;
+        margin-bottom: 14px;
+    }
+    &__input {
+        margin-right: 10px;
+    }
+    &__search-line {
+        height: 35px;
+    }
+}

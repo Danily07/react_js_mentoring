@@ -1,20 +1,23 @@
-import { useState } from 'react';
+import bem from 'easy-bem';
 import AddMovieButton from '../add-movie-component/add-movie-component';
 import SearchButton from '../search-button-component/search-button-component';
 import { Search } from '../search-component/search-component';
-import './header-component.css';
+import './header-component.scss';
+
+const headerBem = bem("header-block");
+const searchBem = bem("search-block");
 
 function Header() {
     return (
         <>
-            <div className="header-block">
-                <div className="header-block__add-movie">
+            <div className={headerBem()}>
+                <div className={headerBem("add-movie")}>
                     <AddMovieButton />
                 </div>
-                <div className="search-block">
-                    <h1 className="search-block__tagline">FIND YOUR MOVIE</h1>
-                    <div className="search-line">
-                        <Search className="search-block__input" />
+                <div className={searchBem()}>
+                    <h1 className={searchBem("tagline")}>FIND YOUR MOVIE</h1>
+                    <div className={searchBem("search-line")}>
+                        <Search className={searchBem("input")} />
                         <SearchButton />
                     </div>
                 </div>
