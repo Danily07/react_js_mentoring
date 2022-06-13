@@ -1,0 +1,12 @@
+.add-movie {
+    width: 130px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #F65261;
+    background: rgba(85, 85, 85, 0.6);
+    border: none;
+}
+
+.add-movie:hover {
+    background: rgba(85, 85, 85, 1.0);
+}

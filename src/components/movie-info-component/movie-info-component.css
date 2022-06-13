@@ -1,0 +1,13 @@
+.item-info_primary {
+    display: flex;
+    margin: -5px 0px;
+    justify-content: space-between;
+}
+
+.item-info_primary label {
+    font-size: 17px;
+}
+
+.item-info_secondary label {
+    font-size: 14px;
+}

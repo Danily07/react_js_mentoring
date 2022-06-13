@@ -1,0 +1,12 @@
+#search-btn {
+    width: 130px;
+    height: 100%;
+    background-color: #F65261;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+}
+
+#search-btn:hover {
+    background-color: #555555;
+}

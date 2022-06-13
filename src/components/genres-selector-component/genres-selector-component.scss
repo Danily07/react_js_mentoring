@@ -1,0 +1,28 @@
+.genres-navigation {
+    width: 25%;
+
+    ul {
+        display: flex;
+        list-style-type: none;
+    }
+
+    li {
+        flex: auto;
+    }
+
+    &__tab:hover {
+        cursor: pointer;
+    }
+
+    &__tab:visited {
+        color: gray;
+    }
+
+    &__genre {
+        color: white;
+
+        &--active {
+            border-bottom: 4px #f65261 solid;
+        }
+    }
+}
