@@ -1,0 +1,22 @@
+.context-menu {
+    display: block;
+    position: absolute;
+    background-color: #232323;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    &--hidden {
+        display: none;
+    }
+}
+
+.context-menu a {
+    color: #FFFFFF;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.context-menu a:hover {
+    background-color: #f65261;
+}

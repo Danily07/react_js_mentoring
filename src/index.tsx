@@ -2,16 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Catalog } from './components/catalog-component/catalog-component';
 import Header from './components/header-component/header-component';
+import Main from './components/main-component/main-component';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <div className="main-block">
-            <Header />
-            <Catalog />
-        </div>
+        <Main></Main>
     </React.StrictMode>,
 );
 

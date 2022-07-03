@@ -1,0 +1,36 @@
+.movie-field-date {
+    &__label {
+        color: #F65261;
+        display: block;
+        text-align: left;
+    }
+    &__picker {
+        width: 350px;
+        height: 30px;
+        border-radius: 5px;
+        background-color: #555555;
+        border-width: 0ch;
+        color: #FFFFFF;
+        &--small {
+            width: 194px;
+            height: 30px;
+            border-radius: 5px;
+            background-color: #555555;
+            border-width: 0ch;
+            color: #FFFFFF;
+        }
+    }
+    &__error {
+        color: #F65261;
+        display: block;
+        text-align: left;
+        font-size: 13px;
+        &--hidden {
+            visibility: hidden;
+        }
+    }
+    .input-date-error {
+        border-width: 2px;
+        border-color: #F65261;
+    }
+}

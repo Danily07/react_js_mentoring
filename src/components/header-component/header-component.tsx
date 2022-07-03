@@ -7,12 +7,16 @@ import './header-component.scss';
 const headerBem = bem("header-block");
 const searchBem = bem("search-block");
 
-function Header() {
+interface HeaderProps {
+    onAdd(): void;
+}
+
+const Header: React.FC<HeaderProps> = props =>  {
     return (
         <>
             <div className={headerBem()}>
                 <div className={headerBem("add-movie")}>
-                    <AddMovieButton />
+                    <AddMovieButton onAdd={props.onAdd}/>
                 </div>
                 <div className={searchBem()}>
                     <h1 className={searchBem("tagline")}>FIND YOUR MOVIE</h1>

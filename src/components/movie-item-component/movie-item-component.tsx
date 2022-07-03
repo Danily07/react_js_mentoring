@@ -9,13 +9,16 @@ interface MovieItemProps {
     movieGenre: string;
     movieYear: number;
     imgPath: string;
+    id: string;
+    onItemDelete(id: string):void;
+    onItemEdit(id: string):void;
 }
 
 const MovieItem: React.FC<MovieItemProps> = props => {
     return (
         <div className="item-list__movie">
             <div className="item-list__movie_aligned">
-                <Poster imgPath={props.imgPath}></Poster>
+                <Poster imgPath={props.imgPath} onItemDelete={() => props.onItemDelete(props.id)} onItemEdit={() => props.onItemEdit(props.id)}></Poster>
                 <MovieInfo
                     year={props.movieYear}
                     name={props.movieName}
