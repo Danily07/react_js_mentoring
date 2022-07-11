@@ -4,6 +4,7 @@ import EditMovie from '../edit-movie-component/edit-movie-component';
 import { GenresSelector } from '../genres-selector-component/genres-selector-component';
 import { ItemsCount } from '../items-count-component/items-count-component';
 import { Movie, MovieContext, OrderBy } from '../main-component/main-component';
+import { MovieContextProvider } from '../main-component/movie-context';
 import { MovieItem } from '../movie-item-component/movie-item-component';
 import Sort from '../sort-component/sort-component';
 import './catalog-component.css';
@@ -27,18 +28,12 @@ const Catalog: React.FC<CatalogProps> = props => {
         setCurMovie(props.data.find(item => item.id === id));
     };
 
-    const closeModalHandler = (save: boolean, changedItem: Movie) => {
-        if (save) {
-            if (changedItem.id === null)
-            {
-                props.onCreateMove(changedItem);
-            }
-            else
-            {
-                props.onUpdateMovie(changedItem);
-            }
+    const closeModalHandler = (changedItem: Movie) => {
+        if (changedItem.id === null) {
+            props.onCreateMove(changedItem);
+        } else {
+            props.onUpdateMovie(changedItem);
         }
-        setCurMovie(null);
         props.onResetCurrentEdit();
     };
     return (
@@ -64,14 +59,17 @@ const Catalog: React.FC<CatalogProps> = props => {
                     ></MovieItem>
                 ))}
             </div>
-            <MovieContext.Provider value={curMovie ?? props.currentEdit}>
+            {curMovie && (
                 <EditMovie
-                    show={isVisibleModal}
-                    onClose={closeModalHandler}
-                ></EditMovie>
-            </MovieContext.Provider>
+                    onSubmit={(movie: Movie) => {
+                        closeModalHandler(movie);
+                        setCurMovie(null);
+                    }}
+                    onClose={() => setCurMovie(null)}
+                />
+            )}
         </div>
     );
-}
+};
 
 export { Catalog };
