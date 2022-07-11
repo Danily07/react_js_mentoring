@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import makeBEM from 'easy-bem';
 //import 'bulma/css/bulma.css';
 
@@ -13,7 +13,7 @@ interface Genre {
     isActive: boolean;
 }
 
-let genresData: Array<Genre> = [
+const genresData: Array<Genre> = [
     { name: 'ALL', isActive: true },
     { name: 'DOCUMENTARY', isActive: false },
     { name: 'COMEDY', isActive: false },
@@ -26,7 +26,7 @@ function GenresSelector() {
         <nav className={bem()}>
             <ul>
                 {genresData.map(genre => (
-                    <li className={bem('tab')}>
+                    <li className={bem('tab')} key={genre.name}>
                         <a
                             href="#"
                             className={bem('genre', { active: genre.isActive })}
