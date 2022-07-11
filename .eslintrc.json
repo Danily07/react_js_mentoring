@@ -1,6 +1,39 @@
 {
-	"settings": {
-		"import/no-unresolved": 0, // Turn off "Unable to resolve path to module ..." error
-		"import/extensions": 0 // Turn off "Missing file extension for ..." error
-	}	
+    "root": true,
+    "env": {
+        "browser": true,
+        "es6": true,
+        "jest": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "plugins": ["react", "@typescript-eslint"],
+    "rules": {
+        "react-hooks/exhaustive-deps": "warn",
+        // "no-var": "error",
+        // "brace-style": "error",
+        // "prefer-template": "error",
+        // "radix": "error",
+        // "space-before-blocks": "error"
+        // "import/prefer-default-export": "off"
+
+        // Disallow lexical declarations in case/default clauses
+        "no-case-declarations": 0
+    },
+    "settings": {
+        "import/no-unresolved": 0, // Turn off "Unable to resolve path to module ..." error
+        "import/extensions": 0 // Turn off "Missing file extension for ..." error
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    }
 }
