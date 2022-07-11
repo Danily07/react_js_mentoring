@@ -1,25 +1,50 @@
-import { useState } from 'react';
+import React from 'react';
 import './movie-field-genre-component.scss';
 import makeBEM from 'easy-bem';
 
 interface MovieGenreFieldProps {
-    name: string;
+    label: string;
     baseKey: string;
     value: string;
-    onChange(value: string): void;
+    onChange(value: string, isValid: boolean, name: string): void;
     small?: boolean;
 }
 
-const allGenres: ReadonlyArray<string> = ["Criminal", "Music & Drama", "Action & Thriller", "Action", "Comedy"];
+const allGenres: ReadonlyArray<string> = [
+    'Criminal',
+    'Music & Drama',
+    'Action & Thriller',
+    'Action',
+    'Comedy',
+];
 
-const bem = makeBEM("movie-field-genre");
+const bem = makeBEM('movie-field-genre');
 
 const MovieGenreField: React.FC<MovieGenreFieldProps> = props => {
+    // initialization effect: send initial validation status to parent component
+    React.useEffect(
+        () => {
+            props.onChange(props.value, true, props.label);
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [],
+    );
+
     return (
         <div className={bem()}>
-            <label className={bem("label")}>{props.name}</label>
-            <select className={bem("selector", {small: props.small ?? false})} key={props.baseKey + "_" + props.name} onChange={e => props.onChange(e.target.value)}>
-                {allGenres.map(g => (<option value={g} selected={props.value === g}>{g}</option>))}
+            <label className={bem('label')}>{props.label}</label>
+            <select
+                className={bem('selector', { small: props.small ?? false })}
+                key={props.baseKey + '_' + props.label}
+                onChange={e =>
+                    props.onChange(e.target.value, true, props.label)
+                }
+            >
+                {allGenres.map(g => (
+                    <option key={g} value={g} selected={props.value === g}>
+                        {g}
+                    </option>
+                ))}
             </select>
         </div>
     );

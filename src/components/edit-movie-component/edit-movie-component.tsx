@@ -1,51 +1,60 @@
-import { useContext, useState } from 'react';
+import React from 'react';
 import MovieField from '../movie-field-component/movie-field-component';
 import MovieDateField from '../movie-field-date-component/movie-field-date-component';
 import MovieGenreField from '../movie-field-genre-component/movie-field-genre-component';
 import './edit-movie-component.scss';
 import makeBEM from 'easy-bem';
-import { Movie, MovieContext } from '../main-component/main-component';
+import { Movie } from '../main-component/main-component';
 import { generateUUID } from '../../utils/Uuid-helper';
+import { values } from 'ramda';
 
 interface EditMovieProps {
-    show: boolean;
-    onClose(save: boolean, changedItem: Movie): void;
+    movie: Movie;
+    onSubmit: (movie: Movie) => void;
+    onClose: () => void;
 }
 
 const bem = makeBEM('modal-body');
 
 const EditMovie: React.FC<EditMovieProps> = props => {
-    if (!props.show) {
-        return null;
-    }
-    const VALIDATION_FIELDS_COUNT = 5;
+    const { onSubmit } = props;
 
-    const context = useContext(MovieContext);
-    const [curItem, setCurItem] = useState(context);
+    const [curItem, setCurItem] = React.useState({ ...props.movie });
+
     //[DI]: for changing input key after every reset
-    const [baseKey, setBaseKey] = useState(generateUUID());
-    const [fieldsValid, setFieldsValid] = useState<Map<string, boolean>>(new Map());
-    const [submitInvoked, setSubmitInvoked] = useState(false);
+    const [baseKey, setBaseKey] = React.useState(generateUUID());
+    const [validationStatus, setValidationStatus] = React.useState<{
+        [field: string]: boolean;
+    }>({
+        TITLE: false,
+        // 'RELEASE DATE': false,
+        'POSTER URL': false,
+        RATING: false,
+        GENRE: false,
+        RUNTIME: false,
+        OVERVIEW: false,
+    });
 
-    const validChangeHandler = (isValid, fieldName) => {
-        setFieldsValid(fieldsValid.set(fieldName, isValid));
-        let fieldsValidArr = Array.from(fieldsValid.values());
-        if (submitInvoked && fieldsValidArr.length == VALIDATION_FIELDS_COUNT)
-        {
-            setSubmitInvoked(false);
-            if (fieldsValidArr.every(isValid => isValid))
-            {
-                props.onClose(true, curItem);
-            }
+    const [hideErrorMessage, setHideErrorMessage] = React.useState(true);
+
+    const submitHandler = React.useCallback(() => {
+        // hide validation errors until user click 'Submit'
+        setHideErrorMessage(false);
+        if (values(validationStatus).every(status => status)) {
+            onSubmit(curItem);
         }
-    };
+    }, [onSubmit, validationStatus, curItem]);
+
+    const resetHandler = React.useCallback(() => {
+        setCurItem({ ...props.movie });
+    }, [props.movie]);
 
     return (
         <div
             className="modal-container"
             id="modal-container"
             onClick={e => {
-                props.onClose(false, curItem);
+                props.onClose();
                 e.stopPropagation();
             }}
         >
@@ -54,20 +63,27 @@ const EditMovie: React.FC<EditMovieProps> = props => {
                 <div className={bem()}>
                     <div className={bem('field-line')}>
                         <MovieField
-                            name="TITLE"
+                            label="TITLE"
                             baseKey={baseKey}
                             value={curItem.name}
-                            regexValidation=".+"
-                            submitInvoked={submitInvoked}
-                            onChangeValid={validChangeHandler}
-                            onChange={value =>
+                            rules={{ '.+': 'Field is required' }}
+                            hideErrorMessage={hideErrorMessage}
+                            onChange={(
+                                value: string,
+                                isValid: boolean,
+                                fieldName: string,
+                            ) => {
                                 setCurItem({
                                     ...curItem,
                                     name: value,
-                                })
-                            }
+                                });
+                                setValidationStatus({
+                                    ...validationStatus,
+                                    [fieldName]: isValid,
+                                });
+                            }}
                         ></MovieField>
-                        <MovieDateField
+                        {/* <MovieDateField
                             name="RELEASE DATE"
                             baseKey={baseKey}
                             required={true}
@@ -81,46 +97,64 @@ const EditMovie: React.FC<EditMovieProps> = props => {
                                     releaseDate: value,
                                 })
                             }
-                        ></MovieDateField>
+                        /> */}
                     </div>
                     <div className={bem('field-line')}>
                         <MovieField
-                            name="POSTER URL"
+                            label="POSTER URL"
                             baseKey={baseKey}
                             value={curItem.image}
-                            regexValidation=".+"
-                            submitInvoked={submitInvoked}
-                            onChangeValid={validChangeHandler}
-                            onChange={value =>
+                            rules={{ '.+': 'Field is required' }}
+                            hideErrorMessage={hideErrorMessage}
+                            onChange={(
+                                value: string,
+                                isValid: boolean,
+                                fieldName: string,
+                            ) => {
                                 setCurItem({
                                     ...curItem,
                                     image: value,
-                                })
-                            }
-                        ></MovieField>
+                                });
+                                setValidationStatus({
+                                    ...validationStatus,
+                                    [fieldName]: isValid,
+                                });
+                            }}
+                        />
                         <MovieField
-                            name="RATING"
+                            label="RATING"
                             baseKey={baseKey}
                             value={
                                 isNaN(curItem.rating)
                                     ? ''
                                     : curItem.rating.toString()
                             }
-                            regexValidation="(^[1-9]$)|(^[0-9]{2}$)|(^100$)"
+                            rules={{
+                                '.+': 'Field is required',
+                                '(^[1-9]$)|(^[0-9]{2}$)|(^100$)':
+                                    'Invalid rating value',
+                            }}
+                            hideErrorMessage={hideErrorMessage}
                             small={true}
-                            submitInvoked={submitInvoked}
-                            onChangeValid={validChangeHandler}
-                            onChange={value =>
+                            onChange={(
+                                value: string,
+                                isValid: boolean,
+                                fieldName: string,
+                            ) => {
                                 setCurItem({
                                     ...curItem,
                                     rating: parseInt(value),
-                                })
-                            }
-                        ></MovieField>
+                                });
+                                setValidationStatus({
+                                    ...validationStatus,
+                                    [fieldName]: isValid,
+                                });
+                            }}
+                        />
                     </div>
                     <div className={bem('field-line')}>
                         <MovieGenreField
-                            name="GENRE"
+                            label="GENRE"
                             baseKey={baseKey}
                             value={curItem.genre}
                             onChange={value =>
@@ -129,60 +163,64 @@ const EditMovie: React.FC<EditMovieProps> = props => {
                                     genre: value,
                                 })
                             }
-                        ></MovieGenreField>
+                        />
                         <MovieField
-                            name="RUNTIME"
+                            label="RUNTIME"
                             baseKey={baseKey}
-                            regexValidation="^[1-9][0-9]{0,2}$"
+                            rules={{
+                                '.+': 'Field is required',
+                                '^[1-9][0-9]{0,2}$': 'Invalid runtime value',
+                            }}
+                            hideErrorMessage={hideErrorMessage}
                             value={
                                 isNaN(curItem.runtime)
                                     ? ''
                                     : curItem.runtime.toString()
                             }
                             small={true}
-                            submitInvoked={submitInvoked}
-                            onChangeValid={validChangeHandler}
-                            onChange={value =>
+                            onChange={(
+                                value: string,
+                                isValid: boolean,
+                                fieldName: string,
+                            ) => {
                                 setCurItem({
                                     ...curItem,
                                     runtime: parseInt(value),
-                                })
-                            }
-                        ></MovieField>
+                                });
+                                setValidationStatus({
+                                    ...validationStatus,
+                                    [fieldName]: isValid,
+                                });
+                            }}
+                        />
                     </div>
                     <MovieField
-                        name="OVERVIEW"
+                        label="OVERVIEW"
                         baseKey={baseKey}
                         value={curItem.comment}
-                        submitInvoked={submitInvoked}
-                        onChangeValid={validChangeHandler}
-                        onChange={value =>
+                        onChange={(
+                            value: string,
+                            isValid: boolean,
+                            fieldName: string,
+                        ) => {
                             setCurItem({
                                 ...curItem,
                                 comment: value,
-                            })
-                        }
+                            });
+                            setValidationStatus({
+                                ...validationStatus,
+                                [fieldName]: isValid,
+                            });
+                        }}
                         multiline={true}
-                    ></MovieField>
+                    />
                 </div>
-                <button
-                    onClick={e => {
-                        setCurItem(context);
-                        setBaseKey(generateUUID());
-                    }}
-                    className="modal__btn-reset"
-                >
+                <button onClick={resetHandler} className="modal__btn-reset">
                     RESET
                 </button>
-                <button
-                    onClick={e => {
-                        setSubmitInvoked(true);
-                        setFieldsValid(new Map());
-                    }}
-                    className="modal__btn-ok"
-                >
+                <div onClick={submitHandler} className="modal__btn-ok">
                     SUBMIT
-                </button>
+                </div>
             </div>
         </div>
     );

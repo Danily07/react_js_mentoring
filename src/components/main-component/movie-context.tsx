@@ -1,5 +1,8 @@
-import React, { PropsWithChildren } from 'react';
-import { Movie } from './main-component';
+import React from 'react';
+import { generateUUID } from '../../utils/Uuid-helper';
+import { Movie, OrderBy } from './main-component';
+
+export const NEW_MOVIE_ID = 'new_movie_id';
 
 const moviesData: Movie[] = [
     {
@@ -65,21 +68,92 @@ const moviesData: Movie[] = [
 ];
 
 export interface MovieContextType {
-    selectedMovie: Movie;
+    movieList: ReadonlyArray<Movie>;
+    /** movie to be edited or created */
+    editableMovie: Movie;
+    setEditableMovieId: (movieId: string) => void;
+    emptyEditableMovie: () => void;
+    updateMovie: (movie: Movie) => void;
+    createMovie: (movie: Movie) => void;
+    deleteMovie: (movieId: string) => void;
+    orderByHandler: (orderType: OrderBy) => void;
 }
 
-export const MovieContext = React.createContext<MovieContextType>(null); //moviesData[0]
+export const MovieContext = React.createContext<MovieContextType>(null);
 
 export interface MovieContextProviderProps {
     children: React.ReactNode;
 }
 
+const newMovie: Movie = {
+    id: NEW_MOVIE_ID,
+    image: '',
+    name: '',
+    genre: '',
+    releaseDate: null,
+    rating: NaN,
+    runtime: NaN,
+    comment: '',
+};
+
 export const MovieContextProvider: React.FC<
     MovieContextProviderProps
 > = props => {
-    const context: MovieContextType = {
-        selectedMovie: null,
-    };
+    const [moviesList, setMoviesList] = React.useState(moviesData);
+    const [editableMovie, setEditableMovie] = React.useState(null);
+
+    // const orderByHandler = (orderType: OrderBy) => {
+    // switch (orderType) {
+    //     case OrderBy.Release:
+    //         const newArrRelease = movies.sort((a, b) =>
+    //             a.releaseDate > b.releaseDate ? 1 : 0,
+    //         );
+    //         //Without slice direct state changing doesn't work :c
+    //         setMoviesState(newArrRelease.slice(0));
+    //         break;
+    //     case OrderBy.Score:
+    //         const newArr = movies.sort((a, b) =>
+    //             a.rating > b.rating ? 1 : 0,
+    //         );
+    //         setMoviesState(newArr.slice(0));
+    //         break;
+    //     case OrderBy.Popularity:
+    //         //[DI]: undefined
+    //         break;
+    // }
+    // };
+
+    const context: MovieContextType = React.useMemo(
+        () => ({
+            movieList: moviesList,
+            editableMovie,
+            setEditableMovieId: (movieId: string) => {
+                console.log('setEditableMovie: ', movieId);
+                const movie = [...moviesList, newMovie].find(
+                    item => item.id === movieId,
+                );
+                setEditableMovie(movie);
+            },
+            emptyEditableMovie: () => setEditableMovie(null),
+            updateMovie: (movie: Movie) => {
+                console.log('updateMovie: ', movie);
+                setMoviesList(
+                    moviesList.map(m => (m.id === movie.id ? movie : m)),
+                );
+            },
+            createMovie: (movie: Movie) => {
+                console.log('createMovie: ', movie);
+                setMoviesList([
+                    ...moviesList,
+                    { ...movie, id: generateUUID() },
+                ]);
+            },
+            deleteMovie: (movieId: string) =>
+                setMoviesList(moviesList.filter(mv => mv.id !== movieId)),
+            orderByHandler: () => undefined,
+        }),
+        [moviesList, editableMovie],
+    );
 
     return (
         <MovieContext.Provider value={context}>
