@@ -16,38 +16,75 @@ interface EditMovieProps {
 
 const bem = makeBEM('modal-body');
 
+type MovieFiledMappingType = Record<keyof Movie, string>;
+
+const movieFiledLabels: Readonly<MovieFiledMappingType> = {
+    id: 'identifier',
+    name: 'TITLE',
+    releaseDate: 'RELEASE DATE',
+    image: 'POSTER URL',
+    rating: 'RATING',
+    genre: 'GENRE',
+    runtime: 'RUNTIME',
+    comment: 'OVERVIEW',
+};
+
+type MovieFiledValidationType = Record<keyof Movie, boolean>;
+
+const movieFiledValidationType: Readonly<MovieFiledValidationType> = {
+    id: true,
+    name: false,
+    releaseDate: true, // [AB] debug MovieDateField then change default value to 'false'
+    image: false,
+    rating: false,
+    genre: false,
+    runtime: false,
+    comment: false,
+};
+
 const EditMovie: React.FC<EditMovieProps> = props => {
     const { onSubmit } = props;
 
-    const [curItem, setCurItem] = React.useState({ ...props.movie });
+    const [movieState, setMovieState] = React.useState({ ...props.movie });
 
-    //[DI]: for changing input key after every reset
-    const [baseKey, setBaseKey] = React.useState(generateUUID());
-    const [validationStatus, setValidationStatus] = React.useState<{
-        [field: string]: boolean;
-    }>({
-        TITLE: false,
-        // 'RELEASE DATE': false,
-        'POSTER URL': false,
-        RATING: false,
-        GENRE: false,
-        RUNTIME: false,
-        OVERVIEW: false,
-    });
+    const [validationStatus, setValidationStatus] =
+        React.useState<MovieFiledValidationType>({
+            ...movieFiledValidationType,
+        });
 
     const [hideErrorMessage, setHideErrorMessage] = React.useState(true);
 
-    const submitHandler = React.useCallback(() => {
-        // hide validation errors until user click 'Submit'
-        setHideErrorMessage(false);
-        if (values(validationStatus).every(status => status)) {
-            onSubmit(curItem);
-        }
-    }, [onSubmit, validationStatus, curItem]);
+    const handleFiledChange = React.useCallback(
+        (value: string, isValid: boolean, field: keyof Movie) => {
+            setMovieState(prev => ({
+                ...prev,
+                [field]: value,
+            }));
+            setValidationStatus(prev => ({
+                ...prev,
+                [field]: isValid,
+            }));
+        },
+        [],
+    );
 
+    // submit changes or show validation errors
+    const submitHandler = React.useCallback(() => {
+        if (values(validationStatus).every(status => status)) {
+            onSubmit(movieState);
+        } else {
+            setHideErrorMessage(false);
+        }
+    }, [onSubmit, validationStatus, movieState]);
+
+    // reset initial state of movie
     const resetHandler = React.useCallback(() => {
-        setCurItem({ ...props.movie });
+        setMovieState({ ...props.movie });
+        setValidationStatus({ ...movieFiledValidationType });
     }, [props.movie]);
+
+    //[DI]: for changing input key after every reset
+    const baseKey = React.useMemo(() => generateUUID(), []);
 
     return (
         <div
@@ -63,28 +100,17 @@ const EditMovie: React.FC<EditMovieProps> = props => {
                 <div className={bem()}>
                     <div className={bem('field-line')}>
                         <MovieField
-                            label="TITLE"
+                            filed="name"
+                            label={movieFiledLabels['name']}
                             baseKey={baseKey}
-                            value={curItem.name}
+                            value={movieState.name}
                             rules={{ '.+': 'Field is required' }}
                             hideErrorMessage={hideErrorMessage}
-                            onChange={(
-                                value: string,
-                                isValid: boolean,
-                                fieldName: string,
-                            ) => {
-                                setCurItem({
-                                    ...curItem,
-                                    name: value,
-                                });
-                                setValidationStatus({
-                                    ...validationStatus,
-                                    [fieldName]: isValid,
-                                });
-                            }}
-                        ></MovieField>
+                            onChange={handleFiledChange}
+                        />
                         {/* <MovieDateField
-                            name="RELEASE DATE"
+                            filed="releaseDate"
+                            label={movieFiledLabels['releaseDate']}
                             baseKey={baseKey}
                             required={true}
                             value={curItem.releaseDate}
@@ -101,33 +127,22 @@ const EditMovie: React.FC<EditMovieProps> = props => {
                     </div>
                     <div className={bem('field-line')}>
                         <MovieField
-                            label="POSTER URL"
+                            filed="image"
+                            label={movieFiledLabels['image']}
                             baseKey={baseKey}
-                            value={curItem.image}
+                            value={movieState.image}
                             rules={{ '.+': 'Field is required' }}
                             hideErrorMessage={hideErrorMessage}
-                            onChange={(
-                                value: string,
-                                isValid: boolean,
-                                fieldName: string,
-                            ) => {
-                                setCurItem({
-                                    ...curItem,
-                                    image: value,
-                                });
-                                setValidationStatus({
-                                    ...validationStatus,
-                                    [fieldName]: isValid,
-                                });
-                            }}
+                            onChange={handleFiledChange}
                         />
                         <MovieField
-                            label="RATING"
+                            filed="rating"
+                            label={movieFiledLabels['rating']}
                             baseKey={baseKey}
                             value={
-                                isNaN(curItem.rating)
+                                isNaN(movieState.rating)
                                     ? ''
-                                    : curItem.rating.toString()
+                                    : movieState.rating.toString()
                             }
                             rules={{
                                 '.+': 'Field is required',
@@ -136,36 +151,20 @@ const EditMovie: React.FC<EditMovieProps> = props => {
                             }}
                             hideErrorMessage={hideErrorMessage}
                             small={true}
-                            onChange={(
-                                value: string,
-                                isValid: boolean,
-                                fieldName: string,
-                            ) => {
-                                setCurItem({
-                                    ...curItem,
-                                    rating: parseInt(value),
-                                });
-                                setValidationStatus({
-                                    ...validationStatus,
-                                    [fieldName]: isValid,
-                                });
-                            }}
+                            onChange={handleFiledChange}
                         />
                     </div>
                     <div className={bem('field-line')}>
                         <MovieGenreField
-                            label="GENRE"
+                            filed="genre"
+                            label={movieFiledLabels['genre']}
                             baseKey={baseKey}
-                            value={curItem.genre}
-                            onChange={value =>
-                                setCurItem({
-                                    ...curItem,
-                                    genre: value,
-                                })
-                            }
+                            value={movieState.genre}
+                            onChange={handleFiledChange}
                         />
                         <MovieField
-                            label="RUNTIME"
+                            filed="runtime"
+                            label={movieFiledLabels['runtime']}
                             baseKey={baseKey}
                             rules={{
                                 '.+': 'Field is required',
@@ -173,45 +172,20 @@ const EditMovie: React.FC<EditMovieProps> = props => {
                             }}
                             hideErrorMessage={hideErrorMessage}
                             value={
-                                isNaN(curItem.runtime)
+                                isNaN(movieState.runtime)
                                     ? ''
-                                    : curItem.runtime.toString()
+                                    : movieState.runtime.toString()
                             }
                             small={true}
-                            onChange={(
-                                value: string,
-                                isValid: boolean,
-                                fieldName: string,
-                            ) => {
-                                setCurItem({
-                                    ...curItem,
-                                    runtime: parseInt(value),
-                                });
-                                setValidationStatus({
-                                    ...validationStatus,
-                                    [fieldName]: isValid,
-                                });
-                            }}
+                            onChange={handleFiledChange}
                         />
                     </div>
                     <MovieField
-                        label="OVERVIEW"
+                        filed="comment"
+                        label={movieFiledLabels['comment']}
                         baseKey={baseKey}
-                        value={curItem.comment}
-                        onChange={(
-                            value: string,
-                            isValid: boolean,
-                            fieldName: string,
-                        ) => {
-                            setCurItem({
-                                ...curItem,
-                                comment: value,
-                            });
-                            setValidationStatus({
-                                ...validationStatus,
-                                [fieldName]: isValid,
-                            });
-                        }}
+                        value={movieState.comment}
+                        onChange={handleFiledChange}
                         multiline={true}
                     />
                 </div>

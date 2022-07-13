@@ -2,8 +2,10 @@ import { keys } from 'ramda';
 import React from 'react';
 import './movie-field-component.scss';
 import makeBEM from 'easy-bem';
+import { Movie } from '../main-component/main-component';
 
 interface MovieFieldProps {
+    filed: keyof Movie;
     label: string;
     value: string;
     baseKey: string;
@@ -11,7 +13,7 @@ interface MovieFieldProps {
     hideErrorMessage?: boolean;
     small?: boolean;
     multiline?: boolean;
-    onChange(value: string, isValid: boolean, name: string): void;
+    onChange(value: string, isValid: boolean, filed: keyof Movie): void;
 }
 
 const bem = makeBEM('movie-field');
@@ -35,7 +37,7 @@ const MovieField: React.FC<MovieFieldProps> = props => {
     React.useEffect(
         () => {
             const errorMessage = getValidationError(props.value, props.rules);
-            props.onChange(props.value, !errorMessage, props.label);
+            props.onChange(props.value, !errorMessage, props.filed);
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [],
@@ -55,7 +57,7 @@ const MovieField: React.FC<MovieFieldProps> = props => {
         const newValue = event.target.value;
         const errorMessage = getValidationError(newValue, props.rules);
         setErrorMsg(errorMessage);
-        props.onChange(newValue, !errorMessage, props.label);
+        props.onChange(newValue, !errorMessage, props.filed);
     };
 
     return (
