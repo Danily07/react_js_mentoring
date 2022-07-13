@@ -128,7 +128,6 @@ export const MovieContextProvider: React.FC<
             movieList: moviesList,
             editableMovie,
             setEditableMovieId: (movieId: string) => {
-                console.log('setEditableMovie: ', movieId);
                 const movie = [...moviesList, newMovie].find(
                     item => item.id === movieId,
                 );

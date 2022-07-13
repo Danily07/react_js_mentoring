@@ -3,7 +3,7 @@ import EditMovie from '../edit-movie-component/edit-movie-component';
 import { GenresSelector } from '../genres-selector-component/genres-selector-component';
 import { ItemsCount } from '../items-count-component/items-count-component';
 import { Movie, OrderBy } from '../main-component/main-component';
-import { MovieContext } from '../main-component/movie-context';
+import { MovieContext, NEW_MOVIE_ID } from '../main-component/movie-context';
 import { MovieItem } from '../movie-item-component/movie-item-component';
 import Sort from '../sort-component/sort-component';
 import './catalog-component.css';
@@ -13,10 +13,10 @@ const Catalog: React.FC = () => {
 
     const submitDialogHandler = React.useCallback(
         (movie: Movie) => {
-            console.log('submitDialogHandler: ', movie);
-            const handler = movie.id
-                ? context.updateMovie
-                : context.createMovie;
+            const handler =
+                movie.id === NEW_MOVIE_ID
+                    ? context.createMovie
+                    : context.updateMovie;
             handler(movie);
             context.emptyEditableMovie();
         },

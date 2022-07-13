@@ -18,13 +18,16 @@ const allGenres: ReadonlyArray<string> = [
     'Comedy',
 ];
 
+const defaultGenre = allGenres[4];
+
 const bem = makeBEM('movie-field-genre');
 
 const MovieGenreField: React.FC<MovieGenreFieldProps> = props => {
     // initialization effect: send initial validation status to parent component
     React.useEffect(
         () => {
-            props.onChange(props.value, true, props.label);
+            // pass actual value or default
+            props.onChange(props.value || defaultGenre, true, props.label);
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [],
@@ -34,6 +37,7 @@ const MovieGenreField: React.FC<MovieGenreFieldProps> = props => {
         <div className={bem()}>
             <label className={bem('label')}>{props.label}</label>
             <select
+                // defaultValue={props.label || defaultGenre}
                 className={bem('selector', { small: props.small ?? false })}
                 key={props.baseKey + '_' + props.label}
                 onChange={e =>
