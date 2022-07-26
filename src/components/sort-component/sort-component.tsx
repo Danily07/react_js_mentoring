@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './sort-component.scss'
 import makeBEM from 'easy-bem';
 import { OrderBy } from '../main-component/main-component';
+import React from 'react'
 
 
 interface SortProps {

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import './poster-component.scss';
 import makeBEM from 'easy-bem';
 import ContextDropdown from '../context-dropdown-component/context-dropdown-component';
+import React from 'react'
 
 interface PosterProps {
     imgPath: string;

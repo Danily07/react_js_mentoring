@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import './context-dropdown-component.scss';
 import makeBEM from 'easy-bem';
+import React from 'react'
 
 interface DropdownItem {
     name: string;
@@ -46,6 +47,7 @@ const ContextDropdown: React.FC<ContextDropdownProps> = props => {
                         item.action();
                         props.onClickOutside();
                     }}
+                    key={item.name}
                 >
                     {item.name}
                 </a>

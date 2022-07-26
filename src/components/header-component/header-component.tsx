@@ -3,6 +3,7 @@ import AddMovieButton from '../add-movie-component/add-movie-component';
 import SearchButton from '../search-button-component/search-button-component';
 import { Search } from '../search-component/search-component';
 import './header-component.scss';
+import React from 'react'
 
 const headerBem = bem("header-block");
 const searchBem = bem("search-block");

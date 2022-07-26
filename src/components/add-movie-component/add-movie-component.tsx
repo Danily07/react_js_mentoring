@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './add-movie-component.css'
+import React from 'react'
 
 interface AddMovieButtonProps {
     onAdd(): void;
