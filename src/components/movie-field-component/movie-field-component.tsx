@@ -1,83 +1,90 @@
-import { useMemo, useRef, useState } from 'react';
+import { keys } from 'ramda';
+import React from 'react';
 import './movie-field-component.scss';
 import makeBEM from 'easy-bem';
+import { Movie } from '../main-component/main-component';
 
 interface MovieFieldProps {
-    name: string;
+    filed: keyof Movie;
+    label: string;
     value: string;
     baseKey: string;
-    regexValidation?: string;
+    rules?: { [regex: string]: string };
+    hideErrorMessage?: boolean;
     small?: boolean;
     multiline?: boolean;
-    submitInvoked: boolean;
-    onChange(value: string): void;
-    onChangeValid(isValid: boolean, name: string): void;
+    onChange(value: string, isValid: boolean, filed: keyof Movie): void;
 }
-
-
 
 const bem = makeBEM('movie-field');
 
+/** find first validation error */
+const getValidationError = (
+    value: string,
+    rules: { [regex: string]: string },
+) => {
+    const error = keys(rules).find(
+        (regex: string) => value.match(regex) === null,
+    );
+
+    return error ? rules[error] : null;
+};
+
 const MovieField: React.FC<MovieFieldProps> = props => {
-    const inputRef = useRef<HTMLInputElement>();
-    const [errorMsg, setErrorMsg] = useState<string>(null);
-    const changeErrorMsg = newErrorMsg => {
-        if (errorMsg != newErrorMsg)
-        {
-            setErrorMsg(newErrorMsg);
-        }
-        props.onChangeValid(newErrorMsg == null, props.name);    
-    };
+    const [errorMsg, setErrorMsg] = React.useState<string>(null);
 
-    const validationHandler = value => {
-        if (props.regexValidation != null) {
-            if (value.match(props.regexValidation) == null) {
-                changeErrorMsg(
-                    value == null ? 'Field is required' : 'Invalid value',
-                );
-            } else {
-                changeErrorMsg(null);
-            }
-        }
-    }
-    const changeHandler = event => {
-        let newValue = event.target.value;
-        validationHandler(newValue);
-        props.onChange(newValue);
-    };
+    // initialization effect: send initial validation status to parent component
+    React.useEffect(
+        () => {
+            const errorMessage = getValidationError(props.value, props.rules);
+            props.onChange(props.value, !errorMessage, props.filed);
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [],
+    );
 
-    if (props.submitInvoked){
-        validationHandler(props.value);
-    }
+    React.useEffect(() => {
+        if (!props.hideErrorMessage) {
+            const errorMessage = getValidationError(props.value, props.rules);
+            setErrorMsg(errorMessage);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.hideErrorMessage]);
+
+    const changeHandler = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+        const newValue = event.target.value;
+        const errorMessage = getValidationError(newValue, props.rules);
+        setErrorMsg(errorMessage);
+        props.onChange(newValue, !errorMessage, props.filed);
+    };
 
     return (
         <div className={bem()}>
-            <label className={bem('label')}>{props.name}</label>
+            <label className={bem('label')}>{props.label}</label>
             {props.multiline ? (
                 <textarea
                     className={
                         bem('input', { small: props.small ?? false }) +
                         (errorMsg == null ? '' : ' input-error')
                     }
-                    key={props.baseKey + '_' + props.name}
+                    key={props.baseKey + '_' + props.label}
                     onChange={changeHandler}
-                    defaultValue={props.value}
-                ></textarea>
+                    value={props.value}
+                />
             ) : (
                 <input
-                    ref={inputRef}
-                    key={props.baseKey + '_' + props.name}
+                    key={props.baseKey + '_' + props.label}
                     onChange={changeHandler}
                     className={
                         bem('input', { small: props.small ?? false }) +
                         (errorMsg == null ? '' : ' input-error')
                     }
-                    defaultValue={props.value}
+                    value={props.value}
                 ></input>
             )}
-            <label className={bem('error', { hidden: errorMsg == null })}>
-                {errorMsg}
-            </label>
+            {errorMsg && <label className={bem('error')}>{errorMsg}</label>}
         </div>
     );
 };

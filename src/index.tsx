@@ -1,16 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { Catalog } from './components/catalog-component/catalog-component';
-import Header from './components/header-component/header-component';
+import ReactDOM from 'react-dom';
 import Main from './components/main-component/main-component';
-import './index.css';
+import { MovieContextProvider } from './components/main-component/movie-context';
 import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+import './index.css';
+
+ReactDOM.render(
     <React.StrictMode>
-        <Main></Main>
+        <MovieContextProvider>
+            <Main />
+        </MovieContextProvider>
     </React.StrictMode>,
+    document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function
