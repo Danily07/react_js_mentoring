@@ -56,10 +56,21 @@ const EditMovie: React.FC<EditMovieProps> = props => {
 
     const handleFiledChange = React.useCallback(
         (value: string, isValid: boolean, field: keyof Movie) => {
-            setMovieState(prev => ({
-                ...prev,
-                [field]: value,
-            }));
+            if (field === "releaseDate")
+            {
+                setMovieState(prev => ({
+                    ...prev,
+                    [field]: value == null ? null : new Date(value),
+                }));
+            }
+            else
+            {
+                setMovieState(prev => ({
+                    ...prev,
+                    [field]: value,
+                }));
+            }
+
             setValidationStatus(prev => ({
                 ...prev,
                 [field]: isValid,
@@ -108,22 +119,16 @@ const EditMovie: React.FC<EditMovieProps> = props => {
                             hideErrorMessage={hideErrorMessage}
                             onChange={handleFiledChange}
                         />
-                        {/* <MovieDateField
-                            filed="releaseDate"
+                        { <MovieDateField
+                            field="releaseDate"
                             label={movieFiledLabels['releaseDate']}
                             baseKey={baseKey}
                             required={true}
-                            value={curItem.releaseDate}
+                            value={movieState.releaseDate}
                             small={true}
-                            submitInvoked={submitInvoked}
-                            onChangeValid={validChangeHandler}
-                            onChange={value =>
-                                setCurItem({
-                                    ...curItem,
-                                    releaseDate: value,
-                                })
-                            }
-                        /> */}
+                            hideErrorMessage={hideErrorMessage}
+                            onChange={handleFiledChange}
+                        /> }
                     </div>
                     <div className={bem('field-line')}>
                         <MovieField

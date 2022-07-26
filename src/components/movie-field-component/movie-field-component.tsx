@@ -24,7 +24,7 @@ const getValidationError = (
     rules: { [regex: string]: string },
 ) => {
     const error = keys(rules).find(
-        (regex: string) => value.match(regex) === null,
+        regex => value.match(regex.toString()) === null
     );
 
     return error ? rules[error] : null;

@@ -2,15 +2,17 @@ import { useState } from 'react';
 import './movie-field-date-component.scss';
 import makeBEM from 'easy-bem';
 import { Movie } from '../main-component/main-component';
+import React from 'react';
 
 interface MovieDateFieldProps {
-    filed: keyof Movie;
+    field: keyof Movie;
     label: string;
     baseKey: string;
     value: Date;
     small?: boolean;
     required: boolean;
-    onChange(value: string, isValid: boolean, filed: keyof Movie): void;
+    hideErrorMessage?: boolean;
+    onChange(value: string, isValid: boolean, name: keyof Movie): void;
 }
 
 const bem = makeBEM('movie-field-date');
@@ -18,38 +20,44 @@ const bem = makeBEM('movie-field-date');
 const MovieDateField: React.FC<MovieDateFieldProps> = props => {
     const [errorMsg, setErrorMsg] = useState<string>(null);
     const DATE_FORMAT = '^[0-9]{4}-[0-9]{2}-[0-9]{2}$';
-    const changeErrorMsg = newErrorMsg => {
-        if (errorMsg != newErrorMsg) {
-            setErrorMsg(newErrorMsg);
+
+    // initialization effect: send initial validation status to parent component
+    React.useEffect(
+        () => {
+            const errorMessage = getValidationError(props.value?.toString(), props.required);
+            props.onChange(props.value?.toString(), !errorMessage, props.field);
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [],
+    );
+
+    /** find first validation error */
+    const getValidationError = (value: string, required: boolean) => {
+        if (value == null && required) {
+            return 'Field is required';
         }
-        props.onChangeValid(newErrorMsg == null, props.label);
-    };
 
-    const validationHandler = value => {
-        if (value == null && props.required) {
-            changeErrorMsg('Field is required');
-
-            return true;
-        } else if (value.match(DATE_FORMAT) == null) {
-            changeErrorMsg('Invalid date');
-
-            return false;
-        } else {
-            changeErrorMsg(null);
-
-            return true;
+        if (value.match(DATE_FORMAT) == null) {
+            return 'Invalid date';
         }
-    };
 
-    const changeHandler = event => {
-        if (validationHandler(event.target.value)) {
-            props.onChange(new Date(event.target.value));
+        return null;
+    };
+    
+    React.useEffect(() => {
+        if (!props.hideErrorMessage) {
+            const errorMessage = getValidationError(props.value?.toString(), props.required);
+            setErrorMsg(errorMessage);
         }
-    };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.hideErrorMessage]);
 
-    if (props.submitInvoked) {
-        validationHandler(props.value?.toISOString().substring(0, 10));
-    }
+    const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target.value;
+        const errorMessage = getValidationError(newValue, props.required);
+        setErrorMsg(errorMessage);
+        props.onChange(newValue, !errorMessage, props.field);
+    };
 
     return (
         <div className={bem()}>
@@ -59,14 +67,12 @@ const MovieDateField: React.FC<MovieDateFieldProps> = props => {
                     bem('picker', { small: props.small ?? false }) +
                     (errorMsg == null ? '' : ' input-date-error')
                 }
-                defaultValue={props.value?.toISOString().substring(0, 10)}
                 type="date"
                 key={props.baseKey + '_' + props.label}
                 onChange={changeHandler}
+                value={props.value?.toISOString()?.substring(0, 10)}
             ></input>
-            <label className={bem('error', { hidden: errorMsg == null })}>
-                {errorMsg}
-            </label>
+            {errorMsg && <label className={bem('error')}>{errorMsg}</label>}
         </div>
     );
 };
