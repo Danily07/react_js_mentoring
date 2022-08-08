@@ -1,33 +1,25 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { addMovieAction } from '../../redux/movieActions';
 import { Catalog } from '../catalog-component/catalog-component';
 import Header from '../header-component/header-component';
 import './main-component.css';
-import { MovieContext, NEW_MOVIE_ID } from './movie-context';
 
 export interface Movie {
     id: string;
     image: string;
     name: string;
     genre: string;
-    releaseDate: Date;
+    //Question: I had to change from Date type, because of "field is non-serializable" error 
+    releaseDate: string;
     rating: number;
     runtime: number;
     comment: string;
 }
 
-export enum OrderBy {
-    Release,
-    Score,
-    Popularity,
-}
-
 const Main: React.FC = () => {
-    const context = React.useContext(MovieContext);
-
-    const onAddHandler = React.useCallback(
-        () => context.setEditableMovieId(NEW_MOVIE_ID),
-        [context],
-    );
+    const dispatch = useDispatch()
+    const onAddHandler = () => dispatch(addMovieAction());
 
     return (
         <div className="main-block">

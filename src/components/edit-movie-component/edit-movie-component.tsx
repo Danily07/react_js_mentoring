@@ -56,20 +56,12 @@ const EditMovie: React.FC<EditMovieProps> = props => {
 
     const handleFiledChange = React.useCallback(
         (value: string, isValid: boolean, field: keyof Movie) => {
-            if (field === "releaseDate")
-            {
-                setMovieState(prev => ({
-                    ...prev,
-                    [field]: value == null ? null : new Date(value),
-                }));
-            }
-            else
-            {
+
                 setMovieState(prev => ({
                     ...prev,
                     [field]: value,
                 }));
-            }
+            
 
             setValidationStatus(prev => ({
                 ...prev,

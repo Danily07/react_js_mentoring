@@ -8,7 +8,7 @@ interface MovieDateFieldProps {
     field: keyof Movie;
     label: string;
     baseKey: string;
-    value: Date;
+    value: string;
     small?: boolean;
     required: boolean;
     hideErrorMessage?: boolean;
@@ -70,7 +70,7 @@ const MovieDateField: React.FC<MovieDateFieldProps> = props => {
                 type="date"
                 key={props.baseKey + '_' + props.label}
                 onChange={changeHandler}
-                value={props.value?.toISOString()?.substring(0, 10)}
+                value={props.value == null ? '' : props.value?.substring(0, 10)}
             ></input>
             {errorMsg && <label className={bem('error')}>{errorMsg}</label>}
         </div>

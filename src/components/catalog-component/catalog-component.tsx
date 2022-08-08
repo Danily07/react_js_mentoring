@@ -1,58 +1,91 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import {
+    deleteMovieAction,
+    deletePayloadType,
+    editMovieAction,
+    editPayloadType,
+    endEditAction,
+    orderAction,
+    OrderBy,
+    orderPayloadType,
+    saveEditPayloadType,
+} from '../../redux/movieActions';
+import { selectEditableMovie, selectMovies } from '../../redux/movieSelectors';
+import { useMovieSelector } from '../../redux/movieStore';
 import EditMovie from '../edit-movie-component/edit-movie-component';
 import { GenresSelector } from '../genres-selector-component/genres-selector-component';
 import { ItemsCount } from '../items-count-component/items-count-component';
-import { Movie, OrderBy } from '../main-component/main-component';
-import { MovieContext, NEW_MOVIE_ID } from '../main-component/movie-context';
+import { Movie } from '../main-component/main-component';
 import { MovieItem } from '../movie-item-component/movie-item-component';
 import Sort from '../sort-component/sort-component';
 import './catalog-component.css';
 
 const Catalog: React.FC = () => {
-    const context = React.useContext(MovieContext);
+    const dispatch = useDispatch();
 
-    const submitDialogHandler = React.useCallback(
-        (movie: Movie) => {
-            const handler =
-                movie.id === NEW_MOVIE_ID
-                    ? context.createMovie
-                    : context.updateMovie;
-            handler(movie);
-            context.emptyEditableMovie();
-        },
-        [context],
-    );
+    const submitDialogHandler = (movie: Movie) => {
+        const payload: saveEditPayloadType = { changedMovie: movie };
 
-    const closeDialogHandler = React.useCallback(() => {
-        context.emptyEditableMovie();
-    }, [context]);
+        dispatch(endEditAction(payload));
+    };
+
+    const closeDialogHandler = () => {
+        const payload: saveEditPayloadType = { changedMovie: null };
+
+        dispatch(endEditAction(payload));
+    };
+
+    const orderByHandler = (orderType: OrderBy) => {
+        const payload: orderPayloadType = { orderType: orderType };
+
+        dispatch(orderAction(payload));
+    };
+
+    const deleteMovieHandler = (movieId: string) => {
+        const payload: deletePayloadType = {movieId: movieId};
+
+        dispatch(deleteMovieAction(payload));
+    };
+
+    const setEditableMovieIdHandler = (movieId: string) => {
+        const payload: editPayloadType = { movieId: movieId };
+
+        dispatch(editMovieAction(payload));
+    };
+
+    const moviesList: ReadonlyArray<Movie> = useMovieSelector(selectMovies);
+    const editableMovie: Movie = useMovieSelector(selectEditableMovie);
+
+    const getFullYear = (strDate: string) =>
+        strDate == null ? NaN : new Date(strDate).getFullYear();
 
     return (
         <div className="catalog-body">
             <div className="nav-sort">
                 <GenresSelector></GenresSelector>
-                <Sort onOrderBy={context.orderByHandler} />
+                <Sort onOrderBy={orderByHandler} />
             </div>
             <div className="items-counter">
-                <ItemsCount itemsCount={context.movieList.length} />
+                <ItemsCount itemsCount={moviesList.length} />
             </div>
             <div className="items-list">
-                {context.movieList.map(dataItem => (
+                {moviesList.map(dataItem => (
                     <MovieItem
                         movieGenre={dataItem.genre}
                         movieName={dataItem.name}
-                        movieYear={dataItem.releaseDate?.getFullYear()}
+                        movieYear={getFullYear(dataItem.releaseDate)}
                         imgPath={dataItem.image}
                         key={dataItem.id}
                         id={dataItem.id}
-                        onItemDelete={context.deleteMovie}
-                        onItemEdit={context.setEditableMovieId}
+                        onItemDelete={deleteMovieHandler}
+                        onItemEdit={setEditableMovieIdHandler}
                     ></MovieItem>
                 ))}
             </div>
-            {context.editableMovie && (
+            {editableMovie && (
                 <EditMovie
-                    movie={context.editableMovie}
+                    movie={editableMovie}
                     onSubmit={submitDialogHandler}
                     onClose={closeDialogHandler}
                 />
