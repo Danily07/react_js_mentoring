@@ -1,5 +1,6 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { useSelector, TypedUseSelectorHook } from 'react-redux';
+import { logger } from 'redux-logger';
 import { Movie } from '../components/main-component/main-component';
 import { movieReducer } from './movieReducer';
 
@@ -14,7 +15,9 @@ export interface MovieApplicationState {
     editableMovie: Movie;
 }
 
-export const store = createStore(movieReducer);
+// const sagaMiddleware = createSagaMiddleware();
+
+export const store = createStore(movieReducer, applyMiddleware(logger));
 
 export type RootState = ReturnType<typeof store.getState>;
 export const useMovieSelector: TypedUseSelectorHook<RootState> = useSelector;
