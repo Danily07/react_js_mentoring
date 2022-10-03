@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
     deleteMovieAction,
@@ -11,6 +11,8 @@ import {
     orderPayloadType,
     saveEditPayloadType,
 } from '../../redux/movieActions';
+import { movieApi, MovieInput, useAddMovieMutation, useEditMovieMutation, useMoviesQuery } from '../../redux/movieApi';
+import { NEW_MOVIE_ID } from '../../redux/movieReducer';
 import { selectEditableMovie, selectMovies } from '../../redux/movieSelectors';
 import { useMovieSelector } from '../../redux/movieStore';
 import EditMovie from '../edit-movie-component/edit-movie-component';
@@ -24,10 +26,34 @@ import './catalog-component.css';
 const Catalog: React.FC = () => {
     const dispatch = useDispatch();
 
-    const submitDialogHandler = (movie: Movie) => {
-        const payload: saveEditPayloadType = { changedMovie: movie };
+    const { data, isSuccess } = useMoviesQuery();
+    const [ addMovie, addMovieStatus ] = useAddMovieMutation();
+    const [ editMovie, editMovieStatus ] = useEditMovieMutation();
 
-        dispatch(endEditAction(payload));
+    const submitDialogHandler = async (movie: Movie) =>  {
+        const input: Omit<MovieInput, "budget" | "revenue" | "tagline" | "vote_count"> = {
+            overview: movie.comment,
+            poster_path:movie.image,
+            release_date: movie.releaseDate,
+            runtime: Number(movie.runtime),
+            vote_average: Number(movie.rating),
+            genres: [movie.genre],
+            title: movie.name,
+            id: movie.id == NEW_MOVIE_ID ? null : Number(movie.id)
+        }
+        
+        if (movie.id == NEW_MOVIE_ID)
+        {
+                        
+            await addMovie(input);
+        }
+        else
+        {
+            await editMovie(input);
+        }
+        
+        dispatch(movieApi.util.invalidateTags(['MoviesData']));
+        closeDialogHandler();
     };
 
     const closeDialogHandler = () => {
@@ -49,7 +75,17 @@ const Catalog: React.FC = () => {
     };
 
     const setEditableMovieIdHandler = (movieId: string) => {
-        const payload: editPayloadType = { movieId: movieId };
+        const toEditItem = data.data.find(m => m.id === Number(movieId));
+        const payload: editPayloadType = { movieToEdit: {
+            id: movieId,
+            image: toEditItem.poster_path,
+            name: toEditItem.title,
+            genre: toEditItem.genres[0],
+            releaseDate: toEditItem.release_date,
+            rating: toEditItem.vote_average,
+            runtime: toEditItem.runtime,
+            comment: toEditItem.overview
+        } };
 
         dispatch(editMovieAction(payload));
     };
@@ -70,18 +106,17 @@ const Catalog: React.FC = () => {
                 <ItemsCount itemsCount={moviesList.length} />
             </div>
             <div className="items-list">
-                {moviesList.map(dataItem => (
-                    <MovieItem
-                        movieGenre={dataItem.genre}
-                        movieName={dataItem.name}
-                        movieYear={getFullYear(dataItem.releaseDate)}
-                        imgPath={dataItem.image}
+                {isSuccess && (data.data.map(dataItem => (
+                <MovieItem
+                        movieGenre={dataItem.genres.join(' & ')}
+                        movieName={dataItem.title}
+                        movieYear={getFullYear(dataItem.release_date)}
+                        imgPath={dataItem.poster_path}
                         key={dataItem.id}
-                        id={dataItem.id}
+                        id={dataItem.id.toString()}
                         onItemDelete={deleteMovieHandler}
                         onItemEdit={setEditableMovieIdHandler}
-                    ></MovieItem>
-                ))}
+                    ></MovieItem>)))}
             </div>
             {editableMovie && (
                 <EditMovie

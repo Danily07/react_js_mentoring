@@ -1,8 +1,10 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { useSelector, TypedUseSelectorHook } from 'react-redux';
 import { logger } from 'redux-logger';
 import { Movie } from '../components/main-component/main-component';
 import { movieReducer } from './movieReducer';
+import { movieApi } from './movieApi';
+import thunkMiddleware from 'redux-thunk'
 
 export interface MovieContextType {
     movieList: Movie[];
@@ -17,7 +19,10 @@ export interface MovieApplicationState {
 
 // const sagaMiddleware = createSagaMiddleware();
 
-export const store = createStore(movieReducer, applyMiddleware(logger));
+export const store = createStore(combineReducers({
+    movieReducer,
+    [movieApi.reducerPath]: movieApi.reducer
+}), applyMiddleware(logger, thunkMiddleware, movieApi.middleware));
 
 export type RootState = ReturnType<typeof store.getState>;
 export const useMovieSelector: TypedUseSelectorHook<RootState> = useSelector;

@@ -35,9 +35,7 @@ const reducerDictionary: Partial<
     }),
     EDIT: (state, { payload }: ReturnType<typeof actions.editMovieAction>) => ({
         ...state,
-        editableMovie: [...state.movieList, newMovie].find(
-            item => item.id === payload.movieId,
-        ),
+        editableMovie: payload.movieToEdit
     }),
     SORT: (state, { payload }: ReturnType<typeof actions.orderAction>) => ({
         ...state,

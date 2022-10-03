@@ -8,7 +8,7 @@ export enum OrderBy {
 }
 
 export interface editPayloadType {
-    movieId: string;
+    movieToEdit: Movie;
 }
 
 export interface orderPayloadType {
@@ -22,6 +22,7 @@ export interface saveEditPayloadType {
 export interface deletePayloadType {
     movieId: string;
 }
+
 
 const EDIT_MOVIE_ACTION = 'ADD';
 const ADD_MOVIE_ACTION = 'EDIT';

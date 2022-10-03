@@ -10,7 +10,7 @@ import { values } from 'ramda';
 
 interface EditMovieProps {
     movie: Movie;
-    onSubmit: (movie: Movie) => void;
+    onSubmit: (movie: Movie) => Promise<void>;
     onClose: () => void;
 }
 
@@ -72,9 +72,9 @@ const EditMovie: React.FC<EditMovieProps> = props => {
     );
 
     // submit changes or show validation errors
-    const submitHandler = React.useCallback(() => {
+    const submitHandler = React.useCallback(async () => {
         if (values(validationStatus).every(status => status)) {
-            onSubmit(movieState);
+            await onSubmit(movieState);
         } else {
             setHideErrorMessage(false);
         }
