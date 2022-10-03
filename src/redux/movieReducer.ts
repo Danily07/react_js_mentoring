@@ -56,6 +56,22 @@ const reducerDictionary: Partial<
             .slice(0)
             .filter(mv => mv.id !== payload.movieId),
     }),
+    LOAD_SUCCESS: (
+        state,
+        { payload }: ReturnType<typeof actions.loadSuccessAction>,
+    ) => ({
+        ...state,
+        movieList: payload.map(item => <Movie>{
+            id: item.id.toString(),
+            image: item.poster_path,
+            name: item.title,
+            genre: item.genres[0],
+            releaseDate: item.release_date,
+            rating: item.vote_average,
+            runtime: item.runtime,
+            comment: item.overview
+        }),
+    }),
 };
 
 const getInitialState = (): MovieApplicationState => {

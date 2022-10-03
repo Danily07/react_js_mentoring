@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import {
     deleteMovieAction,
@@ -12,7 +12,8 @@ import {
     saveEditPayloadType,
 } from '../../redux/movieActions';
 import { selectEditableMovie, selectMovies } from '../../redux/movieSelectors';
-import { useMovieSelector } from '../../redux/movieStore';
+import { store, useMovieSelector } from '../../redux/movieStore';
+import { loadMoviesListThunk } from '../../redux/movieThunks';
 import EditMovie from '../edit-movie-component/edit-movie-component';
 import { GenresSelector } from '../genres-selector-component/genres-selector-component';
 import { ItemsCount } from '../items-count-component/items-count-component';
@@ -23,6 +24,10 @@ import './catalog-component.css';
 
 const Catalog: React.FC = () => {
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        store.dispatch(loadMoviesListThunk as any);
+    })
 
     const submitDialogHandler = (movie: Movie) => {
         const payload: saveEditPayloadType = { changedMovie: movie };

@@ -1,5 +1,6 @@
 import { createAction } from 'redux-actions';
 import { Movie } from '../components/main-component/main-component';
+import { MovieResponeItem } from './movieThunks';
 
 export enum OrderBy {
     Release,
@@ -23,12 +24,17 @@ export interface deletePayloadType {
     movieId: string;
 }
 
+export interface loadPayloadType {
+    movies: MovieResponeItem[];
+}
+
 const EDIT_MOVIE_ACTION = 'ADD';
 const ADD_MOVIE_ACTION = 'EDIT';
 const ORDER_ACTION = 'SORT';
 const END_EDIT_ACTION = 'SUBMIT';
 const DELETE_MOVIE_ACTION = 'DELETE';
 const SIDE_EFFECT_ACTION = 'SIDE_EFFECT';
+const LOAD_SUCCESSS_ACTION ='LOAD_SUCCESS';
 
 export type AnyActionType =
     | typeof EDIT_MOVIE_ACTION
@@ -36,7 +42,8 @@ export type AnyActionType =
     | typeof ORDER_ACTION
     | typeof END_EDIT_ACTION
     | typeof DELETE_MOVIE_ACTION
-    | typeof SIDE_EFFECT_ACTION;
+    | typeof SIDE_EFFECT_ACTION
+    | typeof LOAD_SUCCESSS_ACTION;
 
 export const addMovieAction = createAction<void>(EDIT_MOVIE_ACTION);
 export const editMovieAction = createAction<editPayloadType>(ADD_MOVIE_ACTION);
@@ -46,6 +53,7 @@ export const deleteMovieAction =
     createAction<deletePayloadType>(DELETE_MOVIE_ACTION);
 export const sideEffectAction =
     createAction<deletePayloadType>(SIDE_EFFECT_ACTION);
+export const loadSuccessAction = createAction<MovieResponeItem[]>(LOAD_SUCCESSS_ACTION);
 
 export type AnyActionCreatorType =
     | typeof addMovieAction
@@ -53,7 +61,8 @@ export type AnyActionCreatorType =
     | typeof orderAction
     | typeof endEditAction
     | typeof deleteMovieAction
-    | typeof sideEffectAction;
+    | typeof sideEffectAction
+    | typeof loadSuccessAction;
 
 export type AnyActionPayloadType = ReturnType<AnyActionCreatorType>['payload'];
 
@@ -64,6 +73,7 @@ const allActions = {
     endEditAction,
     deleteMovieAction,
     sideEffectAction,
+    loadSuccessAction
 };
 
 export const actions = allActions as Readonly<typeof allActions>;
