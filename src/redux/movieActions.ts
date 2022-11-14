@@ -34,7 +34,10 @@ const ORDER_ACTION = 'SORT';
 const END_EDIT_ACTION = 'SUBMIT';
 const DELETE_MOVIE_ACTION = 'DELETE';
 const SIDE_EFFECT_ACTION = 'SIDE_EFFECT';
-const LOAD_SUCCESSS_ACTION ='LOAD_SUCCESS';
+
+const LOAD_LOAD_STARTED = 'LOAD_STARTED';
+const LOAD_SUCCESS_ACTION = 'LOAD_SUCCESS';
+const LOAD_FAILURE_ACTION = 'LOAD_FAILURE';
 
 export type AnyActionType =
     | typeof EDIT_MOVIE_ACTION
@@ -43,7 +46,9 @@ export type AnyActionType =
     | typeof END_EDIT_ACTION
     | typeof DELETE_MOVIE_ACTION
     | typeof SIDE_EFFECT_ACTION
-    | typeof LOAD_SUCCESSS_ACTION;
+    | typeof LOAD_LOAD_STARTED
+    | typeof LOAD_SUCCESS_ACTION
+    | typeof LOAD_FAILURE_ACTION;
 
 export const addMovieAction = createAction<void>(EDIT_MOVIE_ACTION);
 export const editMovieAction = createAction<editPayloadType>(ADD_MOVIE_ACTION);
@@ -53,7 +58,11 @@ export const deleteMovieAction =
     createAction<deletePayloadType>(DELETE_MOVIE_ACTION);
 export const sideEffectAction =
     createAction<deletePayloadType>(SIDE_EFFECT_ACTION);
-export const loadSuccessAction = createAction<MovieResponeItem[]>(LOAD_SUCCESSS_ACTION);
+
+export const loadStarted = createAction(LOAD_LOAD_STARTED);
+export const loadSuccessAction =
+    createAction<MovieResponeItem[]>(LOAD_SUCCESS_ACTION);
+export const loadFailureAction = createAction<object>(LOAD_FAILURE_ACTION);
 
 export type AnyActionCreatorType =
     | typeof addMovieAction
@@ -62,7 +71,9 @@ export type AnyActionCreatorType =
     | typeof endEditAction
     | typeof deleteMovieAction
     | typeof sideEffectAction
-    | typeof loadSuccessAction;
+    | typeof loadStarted
+    | typeof loadSuccessAction
+    | typeof loadFailureAction;
 
 export type AnyActionPayloadType = ReturnType<AnyActionCreatorType>['payload'];
 
@@ -73,7 +84,9 @@ const allActions = {
     endEditAction,
     deleteMovieAction,
     sideEffectAction,
-    loadSuccessAction
+    loadStarted,
+    loadSuccessAction,
+    loadFailureAction,
 };
 
 export const actions = allActions as Readonly<typeof allActions>;

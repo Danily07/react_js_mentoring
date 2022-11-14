@@ -44,6 +44,7 @@ const reducerDictionary: Partial<
         movieList: OrderCatalog(state.movieList, payload.orderType),
     }),
     SUBMIT: (state, { payload }: ReturnType<typeof actions.endEditAction>) => ({
+        ...state,
         movieList: SaveEditedMovie(state.movieList, payload.changedMovie),
         editableMovie: null,
     }),
@@ -56,28 +57,44 @@ const reducerDictionary: Partial<
             .slice(0)
             .filter(mv => mv.id !== payload.movieId),
     }),
+    LOAD_STARTED: state => {
+        return { ...state, loading: true, error: null };
+    },
     LOAD_SUCCESS: (
         state,
         { payload }: ReturnType<typeof actions.loadSuccessAction>,
     ) => ({
         ...state,
-        movieList: payload.map(item => <Movie>{
-            id: item.id.toString(),
-            image: item.poster_path,
-            name: item.title,
-            genre: item.genres[0],
-            releaseDate: item.release_date,
-            rating: item.vote_average,
-            runtime: item.runtime,
-            comment: item.overview
-        }),
+        movieList: payload.map(
+            item =>
+                <Movie>{
+                    id: item.id.toString(),
+                    image: item.poster_path,
+                    name: item.title,
+                    genre: item.genres[0],
+                    releaseDate: item.release_date,
+                    rating: item.vote_average,
+                    runtime: item.runtime,
+                    comment: item.overview,
+                },
+        ),
+        loading: false,
+        error: null,
     }),
+    LOAD_FAILURE: (
+        state,
+        { payload }: ReturnType<typeof actions.loadFailureAction>,
+    ) => {
+        return { ...state, loading: false, error: payload };
+    },
 };
 
 const getInitialState = (): MovieApplicationState => {
     return {
         movieList: moviesData,
         editableMovie: null,
+        loading: false,
+        error: null,
     };
 };
 

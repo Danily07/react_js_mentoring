@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { AnyAction } from 'redux';
 import {
     deleteMovieAction,
     deletePayloadType,
@@ -11,9 +12,14 @@ import {
     orderPayloadType,
     saveEditPayloadType,
 } from '../../redux/movieActions';
-import { selectEditableMovie, selectMovies } from '../../redux/movieSelectors';
-import { store, useMovieSelector } from '../../redux/movieStore';
-import { loadMoviesListThunk } from '../../redux/movieThunks';
+import {
+    selectEditableMovie,
+    selectMovies,
+    selectIsLoading,
+    selectIsError,
+} from '../../redux/movieSelectors';
+import { useMovieSelector } from '../../redux/movieStore';
+import { AppDispatch, loadMoviesListThunk } from '../../redux/movieThunks';
 import EditMovie from '../edit-movie-component/edit-movie-component';
 import { GenresSelector } from '../genres-selector-component/genres-selector-component';
 import { ItemsCount } from '../items-count-component/items-count-component';
@@ -23,11 +29,23 @@ import Sort from '../sort-component/sort-component';
 import './catalog-component.css';
 
 const Catalog: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
+
+    useSelector(selectIsLoading);
+
+    const moviesList: ReadonlyArray<Movie> = useMovieSelector(selectMovies);
+    const editableMovie: Movie = useMovieSelector(selectEditableMovie);
+    const isLoading = useMovieSelector(selectIsLoading);
+    const isError = useMovieSelector(selectIsError);
 
     useEffect(() => {
-        store.dispatch(loadMoviesListThunk as any);
-    })
+        // if movie list isn't being loaded yet AND we don't have request's result (error OR list),
+        // then dispatch thunk function
+        if (!isLoading && !(isError || moviesList)) {
+            dispatch(loadMoviesListThunk({}));
+        }
+        // important: do not forget necessory dependencies to avoid function's  erroneous context capture
+    }, [dispatch, isLoading, isError, moviesList]);
 
     const submitDialogHandler = (movie: Movie) => {
         const payload: saveEditPayloadType = { changedMovie: movie };
@@ -48,7 +66,7 @@ const Catalog: React.FC = () => {
     };
 
     const deleteMovieHandler = (movieId: string) => {
-        const payload: deletePayloadType = {movieId: movieId};
+        const payload: deletePayloadType = { movieId: movieId };
 
         dispatch(deleteMovieAction(payload));
     };
@@ -58,9 +76,6 @@ const Catalog: React.FC = () => {
 
         dispatch(editMovieAction(payload));
     };
-
-    const moviesList: ReadonlyArray<Movie> = useMovieSelector(selectMovies);
-    const editableMovie: Movie = useMovieSelector(selectEditableMovie);
 
     const getFullYear = (strDate: string) =>
         strDate == null ? NaN : new Date(strDate).getFullYear();
